@@ -13,10 +13,11 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { useDisclosure } from "@heroui/modal";
 import { Spinner } from "@heroui/spinner";
-import ReactMarkdown from "react-markdown";
+
+import AIForm from "./aiForm";
 
 import DefaultLayout from "@/layouts/default";
-import { fetchAnswer, fetchData } from "@/services/data";
+import { fetchData } from "@/services/data";
 import { SalesRep } from "@/interfaces/sales";
 import DetailModal from "@/components/detail-modal";
 
@@ -25,14 +26,11 @@ export default function IndexPage() {
   const [selectedRep, setSelectedRep] = useState<SalesRep | null>(null);
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [loading, setLoading] = useState(true);
-  const [promptLoading, setPromptLoading] = useState(false);
   const [filterValue, setFilterValue] = useState("");
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "name",
     direction: "ascending",
   });
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -67,20 +65,6 @@ export default function IndexPage() {
 
     return sorted;
   }, [salesReps, filterValue, sortDescriptor]);
-
-  const getAnswer = async () => {
-    setPromptLoading(true);
-    try {
-      const res = await fetchAnswer(question);
-
-      setAnswer(res.answer);
-      setPromptLoading(false);
-    } catch (error) {
-      console.log(error);
-      setAnswer("Failed to get answer");
-      setPromptLoading(false);
-    }
-  };
 
   return (
     <DefaultLayout>
@@ -144,37 +128,7 @@ export default function IndexPage() {
           </CardBody>
         </Card>
 
-        <Card className="w-full p-6">
-          <CardHeader>
-            <h2 className="text-xl font-bold">Ask about your sales data</h2>
-          </CardHeader>
-          <CardBody className="flex flex-col gap-6">
-            <div className="flex flex-row gap-2">
-              <Input
-                isClearable
-                className="pb-6 w-full"
-                placeholder="Ask questions to get insight about sales representatives data, powered by Google Gemini"
-                value={question}
-                variant="bordered"
-                onChange={(e) => setQuestion(e.target.value)}
-                onClear={() => setQuestion("")}
-              />
-              <Button
-                disabled={question == "" || promptLoading ? true : false}
-                onPress={() => getAnswer()}
-              >
-                Send
-              </Button>
-            </div>
-            <div>
-              {promptLoading ? (
-                <Spinner />
-              ) : (
-                <ReactMarkdown>{answer}</ReactMarkdown>
-              )}
-            </div>
-          </CardBody>
-        </Card>
+        <AIForm />
       </section>
       <DetailModal
         isOpen={isOpen}
