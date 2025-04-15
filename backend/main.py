@@ -1,8 +1,14 @@
+import os
+from dotenv import load_dotenv      
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from google import genai
 import uvicorn
 import json
+
+# Load environment variables
+load_dotenv()
 
 app = FastAPI()
 
@@ -20,12 +26,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = genai.Client(api_key="AIzaSyC_5QpEvTlJRxKJSa5kM0DsyFLjyTTrHOo")
+# Load API key from .env
+api_key = os.getenv("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
 
 # Load dummy data
 with open("../dummyData.json", "r") as f:
     DUMMY_DATA = json.load(f)
 
+# Fetch data endpoint
 @app.get("/api/data")
 def get_data():
     """
@@ -33,14 +42,20 @@ def get_data():
     """
     return DUMMY_DATA
 
-@app.post("/api/ai")
-async def ai_endpoint(request: Request):
+# Pydantic models
+class AIRequest(BaseModel):
+    question: str
+
+class AIResponse(BaseModel):
+    answer: str
+
+# AI endpoint
+@app.post("/api/ai", response_model=AIResponse)
+async def ai_endpoint(payload: AIRequest):
     """
-    Accepts a user question and returns a placeholder AI response.
-    (Optionally integrate a real AI model or external service here.)
+    Accepts a user question and returns an AI response. The AI is powered by Gemini.
     """
-    body = await request.json()
-    user_question = body.get("question", "")
+    user_question = payload.question
 
     context = f"""
     You are an assistant with access to the following sales rep data:
