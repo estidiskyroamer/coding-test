@@ -15,25 +15,35 @@ Clone this repository to your local machine.
 
 1. Navigate to '/backend' directory.
 2. Create .env file and add the following line:
+
    ```
    GEMINI_API_KEY=<your-api-key>
    ```
+
 3. Create a virtual environment.
+
    ```bash
    python -m venv .venv
    ```
+
 4. Activate the virtual environment.
+
    ```bash
    .venv\Scripts\
    ```
+
 5. Install all required packages.
+
    ```bash
    pip install -r requirements.txt
    ```
+
 6. Run the backend.
+
    ```bash
    python main.py
    ```
+
    By default, it can be accessed at [http://localhost:8000/](http://localhost:8000/).
 
 ### Frontend Setup
@@ -55,7 +65,7 @@ The use of Tailwind CSS simplifies the customization of the UI design.
 
 The design of the app uses simple card-based layout, with the sales reps data card on the top and AI feature on the bottom. The sales reps detail can be shown in a tab-based modal for a minimalistic and compact view.
 
-The AI features is powered by Google Gemini. It is chosen for its capability to analyze small to medium data.
+The AI feature is powered by Google Gemini. It is chosen for its capability to analyze small to medium data.
 
 ## Potential Improvements
 
