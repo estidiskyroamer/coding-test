@@ -29,7 +29,7 @@ Clone this repository to your local machine.
 4. Activate the virtual environment.
 
    ```bash
-   .venv\Scripts\
+   .venv\Scripts\activate
    ```
 
 5. Install all required packages.
